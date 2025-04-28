@@ -1,7 +1,7 @@
 # SQL Data Warehouse Project
 
 Hi there👋  
-Welcome to my portfolio project on building a modern SQL data warehouse. This project demonstrates a comprehensive data warehousing and analytics solution — from setting up ETL pipelines and building a data model to creating analytics and reporting outputs, all using SQL Server (Developer Edition).
+Welcome to my portfolio project on building a modern SQL data warehouse. This project demonstrates a comprehensive data warehousing and analytics solution — from setting up ETL pipelines and building a data model to creating analytics and reporting outputs.
 
 ## Tools Used:
 
