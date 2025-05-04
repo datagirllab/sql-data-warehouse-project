@@ -1,8 +1,7 @@
 /*
 Script: EXTRACT RAW DATA TO BRONZE
-Bulk insert raw data from source CSV files into the Bronze layer tables.
-  This script truncates existing data and uses BULK INSERT to load fresh data
-  from flat files into the corresponding Bronze schema tables.
+This script truncates existing data and uses BULK INSERT to load fresh data from CSV files into the corresponding Bronze layer tables.
+Note: The file paths in this script are placeholders. Replace <path_to_your_file> with the actual directory path where your CSV files are stored. Ensure the files are present in those locations before running the script.
 */
 
 
