@@ -1,0 +1,196 @@
+-- ===============================================================
+-- SCRIPT: Clean and Load Product Info to Silver Layer
+-- PURPOSE:
+--   1. Perform data quality checks on bronze.crm_prd_info
+--   2. Clean and transform product data
+--   3. Load the cleaned data into silver.crm_prd_info
+--   4. Enable relationship to ERP category table via derived cat_id
+-- ===============================================================
+
+
+-- Check for duplicate or null 'prd_id' values
+SELECT prd_id,
+COUNT(*)
+FROM bronze.crm_prd_info
+GROUP BY prd_id
+HAVING COUNT(*) > 1 OR prd_id IS NULL
+
+
+
+-- Extract and transform product data from bronze.crm for the Silver Layer
+-- Derives a clean 'derived_cat_id' by extracting the first 5 characters of 'prd_key' and replacing hyphens (-) with underscores (_).
+-- This value aligns with the 'id' column in the ERP reference table (bronze.erp_px_cat_g1v2).
+-- Derives 'derived_prd_key' by extracting all characters from the 7th position to the end of 'prd_key',
+-- removing the prefix and isolating the product-specific identifier.
+-- Filters the data to include only those products whose derived product keys exist in the sales transactions table (bronze.crm_sales_details).
+-- This ensures that only actively sold products are carried forward into the Silver Layer
+
+SELECT prd_id ,
+prd_key , 
+REPLACE(SUBSTRING (prd_key,1,5),'-', '_') AS derived_cat_id,
+SUBSTRING (prd_key,7,LEN (prd_key)) AS derived_prd_key,
+prd_nm ,
+prd_cost ,
+prd_line ,
+prd_start_dt ,
+prd_end_dt 
+FROM bronze.crm_prd_info
+WHERE SUBSTRING (prd_key,7,LEN (prd_key)) IN 
+(SELECT sls_prd_key FROM bronze.crm_sales_details);
+
+
+-- Checking for unwanted spaces in the product_name column 
+SELECT prd_nm 
+FROM bronze.crm_prd_info
+WHERE prd_nm != TRIM (prd_nm)
+
+
+-- Check for Nulls or Negative Numbers in the prd_cost column
+SELECT prd_cost
+FROM bronze.crm_prd_info
+WHERE prd_cost < 0 OR prd_cost IS NULL
+
+-- Since there are null values, we will replace them with zero.
+-- Replace null product costs with zero (0) for data consistency
+
+
+SELECT prd_id ,
+prd_key , 
+REPLACE(SUBSTRING (prd_key,1,5),'-', '_') AS derived_cat_id,
+SUBSTRING (prd_key,7,LEN (prd_key)) AS derived_prd_key,
+prd_nm ,
+ISNULL(prd_cost, 0) AS prd_cost,
+prd_line ,
+prd_start_dt ,
+prd_end_dt 
+FROM bronze.crm_prd_info
+
+ 
+-- In the 'prd_line' column, replace coded values with meaningful labels:
+-- 'M' becomes 'Mountain'
+-- 'R' becomes 'Road'
+-- 'S' becomes 'Other Sales'
+-- 'T' becomes 'Touring'
+-- Any other value (including NULL) is replaced with 'Unknown'
+
+SELECT 
+prd_id ,
+prd_key , 
+REPLACE(SUBSTRING (prd_key,1,5),'-', '_') AS derived_cat_id,
+SUBSTRING (prd_key,7,LEN (prd_key)) AS derived_prd_key,
+prd_nm ,
+ISNULL(prd_cost, 0) AS prd_cost,
+CASE UPPER(TRIM(prd_line))
+WHEN 'M' THEN 'Mountain'
+WHEN 'R' THEn 'Road'
+WHEN 'S' THEN 'Other Sales'
+WHEN 'T' THEN 'Touring'
+ELSE 'N/A'
+END AS prd_line,
+prd_start_dt ,
+prd_end_dt 
+FROM bronze.crm_prd_info
+
+-- Check if any 'prd_end_dt' is earlier than 'prd_start_dt'
+-- End date must not be earlier than the start date
+-- This would indicate incorrect date sequencing
+
+SELECT * FROM bronze.crm_prd_info
+WHERE
+prd_end_dt < prd_start_dt;
+ 
+
+ -- Get product details for specific product keys.
+-- Use LEAD() to find the next start date for each product.
+-- Use DATEADD to subtract 1 day from the next start date.
+-- This gives a new end date to check if product periods overlap or have gaps.
+ SELECT 
+  prd_id,
+  prd_key,
+  prd_nm,
+  prd_start_dt,
+  prd_end_dt,
+  DATEADD(DAY, -1, LEAD(prd_start_dt) OVER (PARTITION BY prd_key ORDER BY prd_start_dt)) AS prd_end_date_testing
+FROM bronze.crm_prd_info
+WHERE prd_key IN ('AC-HE-HL-U509-R', 'AC-HE-HL-U509');
+
+
+
+-- - Uses the LEAD() window function to look ahead to the next product start date (within the same product key group).
+-- - Subtracts 1 day from that next start date to create a cleaner prd_end_date for each record.
+SELECT 
+prd_id ,
+prd_key , 
+REPLACE(SUBSTRING (prd_key,1,5),'-', '_') AS cat_id,
+SUBSTRING (prd_key,7,LEN (prd_key)) AS derived_prd_key,
+prd_nm ,
+ISNULL(prd_cost, 0) AS prd_cost,
+CASE UPPER(TRIM(prd_line))
+WHEN 'M' THEN 'Mountain'
+WHEN 'R' THEn 'Road'
+WHEN 'S' THEN 'Other Sales'
+WHEN 'T' THEN 'Touring'
+ELSE 'N/A'
+END AS prd_line,
+prd_start_dt ,
+DATEADD(DAY, -1, LEAD(prd_start_dt) OVER (PARTITION BY prd_key ORDER BY prd_start_dt)) AS prd_end_date
+FROM bronze.crm_prd_info
+ 
+  
+ 
+-- Update the DDL for the Silver Layer by adding 'cat_id'.
+-- This allows the 'crm_prd_info' table to connect with 'silver.erp_px_cat_g1v2'
+-- using a common category ID for joining product and category data.
+
+IF OBJECT_ID('silver.crm_prd_info', 'U') IS NOT NULL
+    DROP TABLE silver.crm_prd_info;
+GO   
+
+CREATE TABLE silver.crm_prd_info(
+    prd_id INT,
+    prd_key NVARCHAR(50),
+	cat_id NVARCHAR (50),
+    prd_nm NVARCHAR(50),
+    prd_cost INT,
+    prd_line NVARCHAR(50),
+    prd_start_dt DATE,
+    prd_end_dt DATE,
+    dwh_create_date    DATETIME2 DEFAULT GETDATE()
+);
+
+
+ -- Inserting cleaned product info into the Silver Layer 'crm_prd_info' table
+
+ INSERT INTO silver.crm_prd_info(
+    prd_id,
+    prd_key ,
+	cat_id ,
+    prd_nm ,
+    prd_cost ,
+    prd_line ,
+    prd_start_dt ,
+    prd_end_dt
+ )
+ SELECT 
+prd_id ,
+SUBSTRING (prd_key,7,LEN (prd_key)) AS prd_key,
+REPLACE(SUBSTRING (prd_key,1,5),'-', '_') AS cat_id,
+prd_nm ,
+ISNULL(prd_cost, 0) AS prd_cost,
+CASE UPPER(TRIM(prd_line))
+WHEN 'M' THEN 'Mountain'
+WHEN 'R' THEN'Road'
+WHEN 'S' THEN 'Other Sales'
+WHEN 'T' THEN 'Touring'
+ELSE 'N/A'
+END AS prd_line,
+prd_start_dt ,
+DATEADD(DAY, -1, LEAD(prd_start_dt) OVER (PARTITION BY prd_key ORDER BY prd_start_dt)) AS prd_end_dt
+FROM bronze.crm_prd_info;
+ 
+ 
+ 
+ -- Preview the loaded silver table
+SELECT * FROM silver.crm_prd_info
+
+ 
