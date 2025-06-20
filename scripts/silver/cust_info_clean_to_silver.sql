@@ -89,6 +89,9 @@ WHERE flag_last = 1;
   
 
 -- Insert cleaned and deduplicated records into silver layer
+PRINT '>> Truncating Table: silver.crm_cust_info'
+TRUNCATE TABLE silver.crm_cust_info
+PRINT '>> Inserting data into:silver.crm_cust_info'
 INSERT INTO silver.crm_cust_info (
     cst_id,
     cst_key,
