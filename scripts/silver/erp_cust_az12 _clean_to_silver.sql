@@ -1,4 +1,4 @@
--- 🛠️ Clean,prepare and insert data from bronze.erp_cust_az12 for the Silver Layer
+-- Clean,prepare and insert data from bronze.erp_cust_az12 for the Silver Layer
 -- ------------------------------------------------------------------------
 
 -- 1️. Clean the Customer ID (cid):
