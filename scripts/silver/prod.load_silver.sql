@@ -1,4 +1,4 @@
-CREATE OR ALTER PROCEDURE bronze.load_bronze
+CREATE OR ALTER PROCEDURE silver.load_silver
 AS
 BEGIN
     -- ==========================================
