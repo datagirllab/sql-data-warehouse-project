@@ -14,7 +14,11 @@
 --    • If gen is 'M' or 'MALE', return 'Male'.
 --    • For all other values, return 'N/A'.
 
-INSERT INTO silver.erp_cust_az12 (cid, bdate,gen)
+PRINT '>> Truncating Table: silver.erp_cust_az12'
+TRUNCATE TABLE silver.erp_cust_az12
+PRINT '>> Inserting data into:silver.erp_cust_az12'
+
+ INSERT INTO silver.erp_cust_az12 (cid, bdate,gen)
 SELECT 
  CASE WHEN cid LIKE 'NAS%' THEN SUBSTRING (cid,4,LEN(cid))
  ELSE cid
