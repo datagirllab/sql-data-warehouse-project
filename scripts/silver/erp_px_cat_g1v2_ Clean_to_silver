@@ -1,10 +1,6 @@
 -- Final Insert: All checks passed on bronze.erp_px_cat_g1v2
 -- Transferring clean data into silver.erp_px_cat_g1v2
 PRINT '>> Truncating Table: silver.erp_px_cat_g1v2'
-TRUNCATE TABLE erp_px_cat_g1v2
-PRINT '>> Inserting data into:silver.erp_px_cat_g1v2'
-
-PRINT '>> Truncating Table: silver.erp_px_cat_g1v2'
 TRUNCATE TABLE silver.erp_px_cat_g1v2
 PRINT '>> Inserting data into:silver.erp_px_cat_g1v2'
 INSERT INTO silver.erp_px_cat_g1v2
