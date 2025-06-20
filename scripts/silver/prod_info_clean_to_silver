@@ -160,7 +160,9 @@ CREATE TABLE silver.crm_prd_info(
 
 
  -- Inserting cleaned product info into the Silver Layer 'crm_prd_info' table
-
+PRINT '>> Truncating Table: silver.crm_prd_info'
+TRUNCATE TABLE silver.crm_prd_info
+PRINT '>> Inserting data into:silver.crm_prd_info'
  INSERT INTO silver.crm_prd_info(
     prd_id,
     prd_key ,
