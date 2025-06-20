@@ -1,6 +1,6 @@
 /*
 ==========================================================
-Stored Procedure: load_bronze_data
+Stored Procedure: bronze.load_bronze
 Purpose: Bulk insert raw data from CSVs into Bronze layer
 Usage: Run to refresh Bronze tables with new source files.
 
