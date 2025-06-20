@@ -6,6 +6,10 @@
 --   Empty string or NULL → 'N/A'
 --   All other values → keep as-is after trimming
 
+PRINT '>> Truncating Table: silver.erp_loc_a101'
+TRUNCATE TABLE silver.erp_loc_a101
+PRINT '>> Inserting data into:silver.erp_loc_a101'
+
 INSERT INTO silver.erp_loc_a101
 (cid, cntry)
 SELECT
@@ -18,7 +22,6 @@ END AS cntry
 FROM bronze.erp_loc_a101
 
 --Data validation — Check unique country values in the Silver Layer
-
 SELECT DISTINCT cntry
 FROM silver.erp_loc_a101
 ORDER BY cntry;
