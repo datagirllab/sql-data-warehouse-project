@@ -1,3 +1,17 @@
+/* ============================================================================
+   STORED PROCEDURE : silver.load_silver
+   PURPOSE          : Cleans, transforms, and loads data from the Bronze Layer 
+                      to the Silver Layer in the data warehouse.
+                      Ensures consistency, standardization, and deduplication. 
+
+     NOTES:
+   - Each Silver table is truncated before new data is inserted to prevent duplicates.
+   - Business rules are applied (e.g., date formatting, null handling, standard labels).
+   - Procedure can be run repeatedly to refresh Silver Layer from Bronze.
+
+   USAGE:
+   EXEC silver.load_silver;
+============================================================================ */
 CREATE OR ALTER PROCEDURE silver.load_silver
 AS
 BEGIN
