@@ -6,6 +6,9 @@ Usage: Run to refresh Bronze tables with new source files.
 
 This stored procedure does not accept any parameters 
 or return any values.
+
+USAGE:
+EXEC bronze.load_bronze;
 ==========================================================
 */
 
