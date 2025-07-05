@@ -1,0 +1,47 @@
+/* ================================================================================
+   VIEW NAME     : gold.dim_products
+   LAYER         : Gold Layer
+   TYPE          : Dimension View (Product Dimension)
+
+   PURPOSE:
+   - Build a cleaned and enriched product dimension view for reporting.
+   - Integrate product data from CRM with category details from ERP.
+   - Simplify field names for better business understanding.
+
+   KEY STEPS:
+   1. Created a view (not a physical table) for flexibility and reuse.
+   2. Used CRM product data as the master source.
+   3. Joined ERP product category table for enrichment:
+      - Added category, subcategory, and maintenance info.
+   4. Filtered for current products only:
+      - Excluded historical records by selecting only those where prd_end_dt IS NULL.
+   5. Applied business-friendly naming:
+      - E.g., 'prd_key' → 'product_number', 'prd_nm' → 'product_name'.
+   6. Generated a surrogate key using ROW_NUMBER():
+      - Ensures each product has a unique identifier.
+
+   NOTE:
+   This view is part of the dimensional model in the Gold Layer,
+   specifically representing the **Product Dimension**.
+
+   USAGE EXAMPLE:
+   SELECT * FROM gold.dim_products WHERE category = 'Accessories';
+=============================================================================== */
+
+CREATE view gold.dim_products AS
+SELECT
+ROW_NUMBER () OVER (ORDER BY p.prd_start_dt, p.prd_key) AS product_key,
+p.prd_id AS product_id,
+p.prd_key AS product_number,
+p.prd_nm AS product_name,
+p.cat_id AS category_id,
+pc.cat AS category,
+pc.subcat AS subcategory,
+pc.maintenance,
+p.prd_cost AS cost,
+p.prd_line AS product_line,
+p.prd_start_dt AS start_date
+FROM silver.crm_prd_info p
+LEFT JOIN silver.erp_px_cat_g1v2 pc
+ON p.cat_id=pc.id
+WHERE prd_end_dt IS NULL -- we are filtering out all historical data
