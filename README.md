@@ -98,6 +98,6 @@ data-warehouse-project/
 ---
 ## 📜 **License**
 
-This project is shared publicly for portfolio purposes.  
-All rights are reserved.  
-Please contact me directly if you wish to use, modify, or adapt any part of this work.
+This project is licensed under the MIT License.
+You are free to use, modify, and distribute this project, but **proper credit must be given**.
+Project inspired by:**Baraa Khatib Salkini** 
