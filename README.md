@@ -23,7 +23,7 @@ GitHub: For version control and collaboration
 ## 🚧 Data Architecture
 
 This project follows the **Medallion Architecture** model, organized into three key layers:
-![Data Architecture](docs/data_warehouse_arch.png)
+![Data Architecture](docs/data_warehouse_architecture.png)
 
 
 1. **Bronze Layer**: Stores raw data directly from the source systems. Data is ingested from CSV files into a SQL Server database without modifications.
