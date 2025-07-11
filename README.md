@@ -7,9 +7,7 @@ Welcome to my portfolio project on building a modern SQL data warehouse. This pr
 
 SQL Server (Developer Edition)
 
-SQL Server Management Studio (SSMS): For managing and interacting with the 
-
-SQL Server database.
+SQL Server Management Studio (SSMS): For managing and interacting with the SQL Server database.
 
 Notion: For project planning, documentation, and task management.
 
