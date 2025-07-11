@@ -7,7 +7,9 @@ Welcome to my portfolio project on building a modern SQL data warehouse. This pr
 
 SQL Server (Developer Edition)
 
-SQL Server Management Studio (SSMS): For managing and interacting with the SQL Server database.
+SQL Server Management Studio (SSMS): For managing and interacting with the 
+
+SQL Server database.
 
 Notion: For project planning, documentation, and task management.
 
@@ -31,6 +33,19 @@ This project follows the **Medallion Architecture** model, organized into three 
 3. **Gold Layer**: Contains business-ready data, modeled into a star schema (fact and dimension tables). Supports advanced reporting, analytics, and insights.
 
 ---
+
+## 📊Data Model
+This project follows a Star Schema data modeling approach. The dimension tables store the customers and product data. Fact Table store the sales data. All dimension tables are connected to the central fact table using surrogate keys.
+![Star Schema Diagram](docs/Data Model for sales Data_ Star Schema.png)
+
+## 🔄 Data Flow /Lineage
+
+This project follows a layered architecture with a clear data flow:
+From source systems (CRM and ERP) → Bronze Layer (raw data) → Silver Layer (cleaned and transformed data) → Gold Layer (business-ready analytical models).
+
+![Data Flow Diagram](docs/Data Lineage _ Flow.drawio.png)
+
+
 
 ## 🛣️ Overview
 
@@ -71,17 +86,17 @@ Provide clear documentation to support business and analytics teams.
 ## 📂 Repository Structure
 
 ```
-data-warehouse-project/
+sql-data-warehouse-project/
 │
 ├── datasets/                           # Raw datasets used for the project (ERP and CRM data)
 │
 ├── docs/                               # Project documentation and architecture details
-│   ├── etl.drawio                      # Draw.io file showing ETL techniques and methods
-│   ├── data_architecture.drawio        # Draw.io file showing the project's architecture
 │   ├── data_catalog.md                 # Catalog of datasets, including field descriptions and metadata
-│   ├── data_flow.drawio                # Draw.io file showing the data flow diagram
-│   ├── data_models.drawio              # Draw.io file for data models (star schema)
-│   ├── naming-conventions.md           # Consistent naming guidelines for tables, columns, and files
+│   ├── data_lineage_flow.drawio                # Draw.io file showing the data flow diagram
+│   ├── data_model.drawio              # Draw.io file for data models (star schema)
+│   ├── datawarehouse_documentation    # Via Notion. Link included
+│   ├── naming-convention.md           # Consistent naming guidelines for tables, columns, and files
+│   ├── data_warehouse_architecture.drawio        # Draw.io file showing the project's architecture
 │
 ├── scripts/                            # SQL scripts for ETL and transformations
 │   ├── bronze/                         # Scripts for extracting and loading raw data
@@ -91,11 +106,18 @@ data-warehouse-project/
 ├── tests/                              # Test scripts and data quality checks
 │
 ├── README.md                           # Project overview and instructions
-├── LICENSE                             # License information for the repository
-├── .gitignore                          # Files and directories to be ignored by Git
+├── LICENSE                             # License information for the repository               
 └── requirements.txt                    # Dependencies and requirements for the project
 ```
 ---
+
+
+## 📄 Documentation
+
+You can view the full project documentation here, hosted on Notion. 
+🔗 https://sql-datawarehouse-project-by-celestine-agropah.notion.site/Data-Warehouse-Project-By-Celestine-Agropah-1e142e2b3980808799e3fa3d09e82979?pvs=74
+
+
 ## 📜 **License**
 
 This project is licensed under the MIT License.
