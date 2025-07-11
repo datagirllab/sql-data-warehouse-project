@@ -26,14 +26,14 @@ This project follows the **Medallion Architecture** model, organized into three 
 
 1. **Bronze Layer**: Stores raw data directly from the source systems. Data is ingested from CSV files into a SQL Server database without modifications.
 
-2. **Silver Layer**: Cleans, standardizes, and transforms the raw data. Prepares the data for analysis and reporting.
+2. **Silver Layer**: Cleans, standardizes, and transforms the raw data. 
 
 3. **Gold Layer**: Contains business-ready data, modeled into a star schema (fact and dimension tables). Supports advanced reporting, analytics, and insights.
 
 ---
 
 ## 📊Data Model
-This project follows a Star Schema data modeling approach. The dimension tables store the customers and product data. Fact Table store the sales data. All dimension tables are connected to the central fact table using surrogate keys.
+This project follows a Star Schema data modeling approach. The dimension tables store the customers and product data. Fact Table store the sales data. All dimension tables are connected to the central fact table using their surrogate keys
 ![Star Schema Diagram](docs/data_model)
 
 ## 🔄 Data Flow /Lineage
