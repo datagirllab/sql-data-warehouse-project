@@ -36,14 +36,14 @@ This project follows the **Medallion Architecture** model, organized into three 
 
 ## 📊Data Model
 This project follows a Star Schema data modeling approach. The dimension tables store the customers and product data. Fact Table store the sales data. All dimension tables are connected to the central fact table using surrogate keys.
-![Star Schema Diagram](docs/Data Model for sales Data_ Star Schema.png)
+![Star Schema Diagram](docs/data_model)
 
 ## 🔄 Data Flow /Lineage
 
 This project follows a layered architecture with a clear data flow:
 From source systems (CRM and ERP) → Bronze Layer (raw data) → Silver Layer (cleaned and transformed data) → Gold Layer (business-ready analytical models).
 
-![Data Flow Diagram](docs/Data Lineage _ Flow.drawio.png)
+![Data Flow Diagram](docs/data_lineage_flow.drawio.png)
 
 
 
@@ -114,7 +114,7 @@ sql-data-warehouse-project/
 
 ## 📄 Documentation
 
-You can view the full project documentation here, hosted on Notion. 
+You can view the full project documentation here, hosted on Notion. <br>
 🔗 https://sql-datawarehouse-project-by-celestine-agropah.notion.site/Data-Warehouse-Project-By-Celestine-Agropah-1e142e2b3980808799e3fa3d09e82979?pvs=74
 
 
